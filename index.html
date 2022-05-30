@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+    <title>Tags</title>
+    <style>
+      * {
+        box-sizing: border-box;
+        padding: 0px;
+        margin: 0px;
+      }
+
+      .button-adjective {
+        padding: 10px;
+        border-radius: 50px;
+        border: none;
+        margin: 2px;
+        display: inline-flex;
+        align-items: center;
+      }
+
+      .button-adjective.active {
+        background-color: #4caf50;
+        color: white;
+      }
+
+      .button-adjective.active.mood-negative {
+        background-color: #902a2a;
+        color: white;
+      }
+
+      .input-new-tag {
+        border-radius: 50px;
+        padding: 10px;
+        border: none;
+        background-color: lightgrey;
+      }
+
+      .mood {
+        padding-right: 2px;
+      }
+
+      .mood.mood-positive {
+        color: green;
+      }
+
+      .mood.mood-negative {
+        color: red;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="tag-container">
+      <div class="existing-tag-container">
+        <button class="button-adjective mood-positive">
+          <span class="mood mood-positive">
+            <i class='fa fa-check-circle'></i>
+          </span>
+          <span>Good listener</span>
+        </button>
+        <button class="button-adjective mood-negative">
+          <span class="mood mood-negative">
+            <i class='fa fa-remove'></i>
+          </span>
+          <span>Impatient</span>
+        </button>
+        <button class="button-adjective mood-neutral">
+          <span class="mood mood-neutral">
+            <i class='fa fa-circle'></i>
+          </span>
+          <span>Computer science</span>
+        </button>
+      </div>
+      <input class="input-new-tag" type="text" id="input-text" />
+    </div>
+    <div>Selected adjectives are : <span class="output"></span></div>
+    <script>
+      const output = document.querySelector(".output");
+      const buttons = document.querySelectorAll(".button-adjective");
+      const newTagInput = document.querySelector(".input-new-tag");
+
+      function updateSelectedAdjectives() {
+        const selectedAdjectives = [];
+        document.querySelectorAll(".button-adjective").forEach((button) => {
+          if (button.classList.contains("active")) {
+            selectedAdjectives.push(button.innerText);
+          }
+        });
+        output.innerText = selectedAdjectives.join(", ");
+      }
+
+      newTagInput.addEventListener("keypress", function (e) {
+        if (e.key == "Enter") {
+          e.preventDefault();
+          const newTag = newTagInput.value;
+          const newTagButton = document.createElement("button");
+          newTagButton.classList.add("button-adjective","mood-neutral");
+          newTagButton.innerHTML = `<span class="mood mood-neutral"><i class='fa fa-circle'></i></span> <span>${newTag}</span>\n`;
+
+          newTagButton.addEventListener("click", function () {
+            newTagButton.classList.toggle("active");
+            updateSelectedAdjectives();
+          });
+
+          document
+            .querySelector(".existing-tag-container")
+            .appendChild(newTagButton);
+
+          newTagInput.value = "";
+        }
+      });
+
+      buttons.forEach((button) => {
+        button.addEventListener("click", (event) => {
+          button.classList.toggle("active");
+          updateSelectedAdjectives();
+        });
+      });
+    </script>
+  </body>
+</html>
