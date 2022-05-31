@@ -11,24 +11,30 @@
     <title>Tag input</title>
     <style>
       .input-new-tag {
-        border-radius: 50px;
+        border-radius: 0px 50px 50px 0px;
         padding: 10px;
         border: none;
         background-color: lightgrey;
       }
 
-      .tag-input-container {
+      .tag-input-group {
         background-color: lightgray;
         display: inline-flex;
         border-radius: 100px;
-        border:2px solid black;
+        border: 2px solid black;
+        margin-bottom: 5px;
       }
 
-      .tag-input-container {
-        background-color: lightgray;
-        display: inline-flex;
-        border-radius: 100px;
-        border:2px solid black;
+      .error-message {
+        color: red;
+      }
+
+      .error-message.hide {
+        opacity: 0;
+      }
+
+      .error-message {
+        opacity: 100;
       }
 
       select {
@@ -41,24 +47,123 @@
   </head>
   <body>
     <div class="tag-input-container">
-      <select value="Choose one">
-        <option value="select-mood">Select a mood</option>
-        <option value="positive">
-          <i class="fa fa-check-circle"></i>Positive
-        </option>
-        <option value="negative"><i class="fa fa-remove"></i>Negative</option>
-        <option value="neutral"><i class="fa fa-circle"></i>Neutral</option>
-      </select>
-      <input class="input-new-tag" placeholder="Type to create new tag" type="text" id="input-text" />
+      <div class="tag-input-group">
+        <select value="Choose one">
+          <option value="select-mood">Select a mood</option>
+          <option value="positive">
+            <i class="fa fa-check-circle"></i>Positive
+          </option>
+          <option value="negative"><i class="fa fa-remove"></i>Negative</option>
+          <option value="neutral"><i class="fa fa-circle"></i>Neutral</option>
+        </select>
+        <input
+          class="input-new-tag"
+          placeholder="Type to create new tag"
+          type="text"
+          id="input-text"
+        />
+      </div>
+      <div class="error-message hide">Please select the mood for the tag</div>
     </div>
+    <div>Some more text</div>
 
-    <select value="Choose one">
-        <option value="select-mood">Select a mood</option>
-        <option value="positive">
-          <i class="fa fa-check-circle"></i>Positive
-        </option>
-        <option value="negative"><i class="fa fa-remove"></i>Negative</option>
-        <option value="neutral"><i class="fa fa-circle"></i>Neutral</option>
-      </select>
+    <!-- <select value="Choose one">
+      <option value="select-mood">Select a mood</option>
+      <option value="positive">
+        <i class="fa fa-check-circle"></i>Positive
+      </option>
+      <option value="negative"><i class="fa fa-remove"></i>Negative</option>
+      <option value="neutral"><i class="fa fa-circle"></i>Neutral</option>
+    </select> -->
+
+    <script>
+      const input = document.querySelector("#input-text");
+      const select = document.querySelector("select");
+      const container = document.querySelector(".tag-input-group");
+      const existingTags = document.querySelector(".existing-tag-container");
+      const errorMessage = document.querySelector(".error-message");
+
+      function notifyNewTagAdded({ mood, text, id }) {
+        // const newTag = document.createElement("button");
+        // newTag.classList.add("button-adjective");
+        // newTag.classList.add(`mood-${mood}`);
+        // newTag.innerHTML = `<span class="mood mood-${mood}">
+        //   <i class="fa fa-circle"></i>
+        // </span>
+        // <span>${text}</span>`;
+        // existingTags.appendChild(newTag);
+      }
+
+      function addNewTag({ mood, text }) {
+        console.log(
+          `making API request to create a new tag with mood ${mood} and text ${text}`
+        );
+
+        // send Post request to create tag using fetch API with the mood and text
+        fetch("http://localhost:5000/tags", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ mood, text }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            console.log(data);
+            console.log(`Tag created with id ${data.id}`);
+            notifyNewTagAdded({mood, text, id : data.id});
+          });
+
+        // reset input and select tag
+        input.value = "";
+        select.value = "select-mood";
+      }
+
+      select.addEventListener("change", function () {
+        if (select.value === "select-mood") {
+          errorMessage.classList.remove("hide");
+          return;
+        }
+        errorMessage.classList.add("hide");
+
+        // addNewTag if input is not empty
+        if (input.value.trim() !== "") {
+          addNewTag({
+            mood: select.value,
+            text: input.value,
+          });
+        }
+      });
+
+      input.addEventListener("keyup", function (e) {
+        if (e.keyCode === 13) {
+          e.preventDefault();
+          // if selected option is not "select-mood"
+          if (select.value !== "select-mood") {
+            // add class hide to the error
+            errorMessage.classList.add("hide");
+            // if input is not empty
+            if (input.value !== "") {
+              // add new tag
+              addNewTag({
+                mood: select.value,
+                text: input.value,
+              });
+              // clear input
+              input.value = "";
+            }
+          } else {
+            console.log("Please select a mood");
+            errorMessage.classList.remove("hide");
+          }
+        }
+      });
+
+      container.addEventListener("click", function (e) {
+        if (e.target.classList.contains("button-adjective")) {
+          e.target.classList.toggle("active");
+        }
+      });
+    </script>
   </body>
 </html>

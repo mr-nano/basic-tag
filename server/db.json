@@ -1,0 +1,44 @@
+{
+  "tags": [
+    {
+      "id": 1,
+      "mood": "positive",
+      "text": "Googler"
+    },
+    {
+      "id": 2,
+      "mood": "neutral",
+      "text": "animal lover"
+    },
+    {
+      "id": 3,
+      "mood": "negative",
+      "text": "lacks practice"
+    },
+    {
+      "id": 4,
+      "mood": "positive",
+      "text": "reader"
+    },
+    {
+      "mood": "positive",
+      "text": "happy",
+      "id": 5
+    },
+    {
+      "mood": "positive",
+      "text": "happy",
+      "id": 6
+    },
+    {
+      "mood": "positive",
+      "text": "hey",
+      "id": 7
+    },
+    {
+      "mood": "neutral",
+      "text": "adfadf",
+      "id": 8
+    }
+  ]
+}
